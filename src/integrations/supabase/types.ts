@@ -14,7 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      content_items: {
+        Row: {
+          created_at: string
+          id: string
+          is_favorite: boolean
+          output: Json
+          planned_date: string | null
+          platform: Database["public"]["Enums"]["platform_type"]
+          source_id: string | null
+          topic: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_favorite?: boolean
+          output: Json
+          planned_date?: string | null
+          platform: Database["public"]["Enums"]["platform_type"]
+          source_id?: string | null
+          topic: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_favorite?: boolean
+          output?: Json
+          planned_date?: string | null
+          platform?: Database["public"]["Enums"]["platform_type"]
+          source_id?: string | null
+          topic?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_items_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "content_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          channel_name: string | null
+          created_at: string
+          id: string
+          niche: Database["public"]["Enums"]["niche_type"] | null
+          target_audience: string | null
+          tone: Database["public"]["Enums"]["tone_type"] | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          channel_name?: string | null
+          created_at?: string
+          id: string
+          niche?: Database["public"]["Enums"]["niche_type"] | null
+          target_audience?: string | null
+          tone?: Database["public"]["Enums"]["tone_type"] | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          channel_name?: string | null
+          created_at?: string
+          id?: string
+          niche?: Database["public"]["Enums"]["niche_type"] | null
+          target_audience?: string | null
+          tone?: Database["public"]["Enums"]["tone_type"] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +102,21 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      niche_type:
+        | "Gaming"
+        | "Education"
+        | "Finance"
+        | "Fitness"
+        | "Travel"
+        | "Comedy"
+        | "Tech"
+      platform_type: "YouTube" | "Instagram" | "TikTok"
+      tone_type:
+        | "Friendly"
+        | "Professional"
+        | "Humorous"
+        | "Bold"
+        | "Educational"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +243,24 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      niche_type: [
+        "Gaming",
+        "Education",
+        "Finance",
+        "Fitness",
+        "Travel",
+        "Comedy",
+        "Tech",
+      ],
+      platform_type: ["YouTube", "Instagram", "TikTok"],
+      tone_type: [
+        "Friendly",
+        "Professional",
+        "Humorous",
+        "Bold",
+        "Educational",
+      ],
+    },
   },
 } as const
