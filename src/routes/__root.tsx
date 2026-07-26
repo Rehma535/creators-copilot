@@ -67,13 +67,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Plan, write, and organize content across YouTube, Instagram, and TikTok with an AI copilot built for creators.",
       },
-      { property: "og:title", content: "Creator Copilot" },
+      { property: "og:title", content: "Creator Copilot — AI content assistant for creators" },
       {
         property: "og:description",
-        content: "AI assistant for content creators — plan, write, and organize content across every platform.",
+        content: "Plan, write, and organize content across YouTube, Instagram, and TikTok with an AI copilot built for creators.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Creator Copilot — AI content assistant for creators" },
+      { name: "twitter:description", content: "Plan, write, and organize content across YouTube, Instagram, and TikTok with an AI copilot built for creators." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a4ba602-5c79-4672-9b40-040cc4578e8f/id-preview-f7f7d555--4a9a20f0-6311-4231-90b3-5d1dd49da328.lovable.app-1785083472848.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a4ba602-5c79-4672-9b40-040cc4578e8f/id-preview-f7f7d555--4a9a20f0-6311-4231-90b3-5d1dd49da328.lovable.app-1785083472848.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
