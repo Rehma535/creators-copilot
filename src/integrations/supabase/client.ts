@@ -32,9 +32,7 @@ function createSupabaseClient() {
   // Fall back to process.env for SSR (server-side rendering)
   const SUPABASE_URL = (
     import.meta.env.VITE_SUPABASE_URL ||
-    import.meta.env.VITE_SUPABASE_ANON_KEY ||
     process.env.SUPABASE_URL ||
-    process.env.SUPABASE_ANON_KEY ||
     ""
   )
     .toString()
