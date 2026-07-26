@@ -146,13 +146,19 @@ function CalendarPage() {
           <h1 className="text-4xl font-bold gradient-text">Calendar</h1>
           <p className="text-muted-foreground mt-1">Plan when your content goes live.</p>
         </div>
-        <Button
-          onClick={runAutoSchedule}
-          disabled={autoBusy || unplanned.length === 0}
-          className="gradient-primary text-white border-0 neon-glow-hover"
-        >
-          {autoBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : (<><Sparkles className="h-4 w-4 mr-2" /> Auto-Schedule Unplanned</>)}
-        </Button>
+        <div className="flex flex-col items-end gap-1">
+          <Button
+            onClick={runAutoSchedule}
+            disabled={autoBusy || unplanned.length === 0}
+            className="gradient-primary text-white border-0 neon-glow-hover disabled:opacity-60 disabled:cursor-not-allowed"
+            title={unplanned.length === 0 ? "No unscheduled content" : undefined}
+          >
+            {autoBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : (<><Sparkles className="h-4 w-4 mr-2" /> Auto-Schedule Unplanned</>)}
+          </Button>
+          {unplanned.length === 0 && (
+            <span className="text-xs text-muted-foreground">No unscheduled content</span>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center justify-between flex-wrap gap-3">
