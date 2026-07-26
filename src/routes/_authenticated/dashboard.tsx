@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Sparkles, Calendar as CalIcon, TrendingUp, Wand2, History as HistoryIcon } from "lucide-react";
+import studioImg from "@/assets/studio.jpg";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
