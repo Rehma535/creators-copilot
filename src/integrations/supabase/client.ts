@@ -61,6 +61,7 @@ function createSupabaseClient() {
     .toString()
     .trim() || FALLBACK_SUPABASE_PUBLISHABLE_KEY;
 
+  // Force Vercel rebuild - trigger new commit
   console.log("[Supabase] Initializing client with URL:", SUPABASE_URL);
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
