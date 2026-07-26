@@ -102,7 +102,7 @@ export const repurposeContent = createServerFn({ method: "POST" })
       .single();
     if (se || !source) throw new Error("Source content not found");
     const text = (source.output as { text?: string })?.text ?? "";
-    const system = `You are a content strategist. Rewrite this ${source.platform} content as ${data.target_platform} content, adapting format and length to platform norms while preserving the core message. Use clear Markdown headings.`;
+    const system = `You are a content strategist. Rewrite this ${source.platform} content as ${data.target_platform} content, adapting format and length to platform norms while preserving the core message. Return CLEAN PLAIN TEXT ONLY — no Markdown syntax (no #, ##, **, *, backticks, --- dividers, or code fences). Use plain uppercase section labels ending in a colon (e.g. "HOOK:").`;
     const output = await callGemini(system, `Topic: ${source.topic}\n\nOriginal content:\n${text}`);
     const { data: inserted, error } = await supabase
       .from("content_items")
