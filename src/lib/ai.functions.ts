@@ -44,12 +44,15 @@ function buildSystemPrompt(profile: ProfileCtx, platform: string) {
   ].join(", ");
 
   const perPlatform: Record<string, string> = {
-    YouTube: "Return sections labeled: Title Options (5), Hook, Script Outline, Thumbnail Concepts (3), SEO Tags.",
-    Instagram: "Return sections labeled: Caption, Carousel Outline (5-7 slides), CTA, Hashtags.",
-    TikTok: "Return sections labeled: 30-Second Script, Hook, Caption, Trending Style Suggestion.",
+    YouTube:
+      "Return these sections, each on its own line starting with the section name followed by a colon, then the content below it:\n\nTITLE OPTIONS:\n(5 numbered title options)\n\nHOOK:\n(the opening 10-15 seconds of narration, word-for-word)\n\nSCRIPT:\n(A complete, word-for-word spoken script the creator will read on camera. Break it into timestamped sections like [0:00-0:30], [0:30-1:15], etc. Each section contains the ACTUAL narration text — full sentences the creator says out loud — not bullet points or topic summaries. Aim for a 3-6 minute video length with natural spoken pacing.)\n\nTHUMBNAIL CONCEPTS:\n(3 numbered thumbnail ideas)\n\nSEO TAGS:\n(comma-separated tags)",
+    Instagram:
+      "Return these sections, each on its own line starting with the section name followed by a colon, then the content below it:\n\nCAPTION:\n(the full caption)\n\nCAROUSEL OUTLINE:\n(5-7 numbered slides with slide title and body copy)\n\nCTA:\n(one clear call to action)\n\nHASHTAGS:\n(space-separated hashtags)",
+    TikTok:
+      "Return these sections, each on its own line starting with the section name followed by a colon, then the content below it:\n\nHOOK:\n(the opening 3 seconds, word-for-word)\n\n30-SECOND SCRIPT:\n(complete word-for-word narration)\n\nCAPTION:\n(the caption text)\n\nTRENDING STYLE SUGGESTION:\n(format/sound/style recommendation)",
   };
 
-  return `You are a content strategist for a creator with this profile: ${parts}. Generate platform-specific content for ${platform}, writing in the creator's tone for their audience. ${perPlatform[platform] || ""} Use clear Markdown headings and lists. Be concise and actionable.`;
+  return `You are a content strategist for a creator with this profile: ${parts}. Generate platform-specific content for ${platform}, writing in the creator's tone for their audience. ${perPlatform[platform] || ""}\n\nCRITICAL FORMATTING RULES: Return CLEAN PLAIN TEXT ONLY. Do NOT use any Markdown syntax — no #, ##, ###, no **bold**, no *italic*, no backticks, no --- dividers, no > blockquotes. Do not wrap the response in code fences. Section labels should be plain uppercase text followed by a colon (e.g. "HOOK:"). The UI already renders each section in its own styled card, so formatting symbols are not needed.`;
 }
 
 export const generateContent = createServerFn({ method: "POST" })
@@ -99,7 +102,7 @@ export const repurposeContent = createServerFn({ method: "POST" })
       .single();
     if (se || !source) throw new Error("Source content not found");
     const text = (source.output as { text?: string })?.text ?? "";
-    const system = `You are a content strategist. Rewrite this ${source.platform} content as ${data.target_platform} content, adapting format and length to platform norms while preserving the core message. Use clear Markdown headings.`;
+    const system = `You are a content strategist. Rewrite this ${source.platform} content as ${data.target_platform} content, adapting format and length to platform norms while preserving the core message. Return CLEAN PLAIN TEXT ONLY — no Markdown syntax (no #, ##, **, *, backticks, --- dividers, or code fences). Use plain uppercase section labels ending in a colon (e.g. "HOOK:").`;
     const output = await callGemini(system, `Topic: ${source.topic}\n\nOriginal content:\n${text}`);
     const { data: inserted, error } = await supabase
       .from("content_items")
