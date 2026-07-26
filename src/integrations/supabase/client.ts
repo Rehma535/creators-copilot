@@ -27,39 +27,41 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 }
 
 
+const FALLBACK_SUPABASE_URL = "https://mmhycplzjfhiyglttilt.supabase.co";
+const FALLBACK_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_cMzFwEY6kmiNZU4l-zjNbA_xwxIY_jJ";
+
+function isValidHttpUrl(value: string): boolean {
+  try {
+    const u = new URL(value);
+    return u.protocol === "https:" || u.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 function createSupabaseClient() {
-  // Use import.meta.env for client-side (Vite build-time replacement)
-  // Fall back to process.env for SSR (server-side rendering)
-  const SUPABASE_URL = (
+  const rawUrl = (
     import.meta.env.VITE_SUPABASE_URL ||
-    process.env.SUPABASE_URL ||
-    ""
+    (typeof process !== "undefined" ? process.env?.SUPABASE_URL : "") ||
+    FALLBACK_SUPABASE_URL
   )
     .toString()
     .trim()
     .replace(/\/$/, "");
 
+  const SUPABASE_URL = isValidHttpUrl(rawUrl) ? rawUrl : FALLBACK_SUPABASE_URL;
+
   const SUPABASE_PUBLISHABLE_KEY = (
     import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
     import.meta.env.VITE_SUPABASE_ANON_KEY ||
-    process.env.SUPABASE_PUBLISHABLE_KEY ||
-    process.env.SUPABASE_ANON_KEY ||
-    ""
+    (typeof process !== "undefined" ? process.env?.SUPABASE_PUBLISHABLE_KEY : "") ||
+    (typeof process !== "undefined" ? process.env?.SUPABASE_ANON_KEY : "") ||
+    FALLBACK_SUPABASE_PUBLISHABLE_KEY
   )
     .toString()
-    .trim();
+    .trim() || FALLBACK_SUPABASE_PUBLISHABLE_KEY;
 
   console.log("[Supabase] Initializing client with URL:", SUPABASE_URL);
-
-  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-    const missing = [
-      ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
-      ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
-    ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
-    console.error(`[Supabase] ${message}`);
-    throw new Error(message);
-  }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
     global: {
