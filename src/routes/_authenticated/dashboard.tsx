@@ -43,13 +43,21 @@ function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      <div>
-        <p className="text-sm text-muted-foreground">
-          {isNew ? "Let's make your first post." : "Here's your creator overview."}
-        </p>
-        <h1 className="text-4xl md:text-5xl font-bold gradient-text mt-1">
-          {isNew ? "Welcome Aboard" : "Welcome Back"}
-        </h1>
+      <div className="relative overflow-hidden rounded-3xl border border-border">
+        <img
+          src={studioImg}
+          alt="Content creator studio setup with ring light, monitors, and camera gear"
+          className="h-64 md:h-80 w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-tr from-background via-background/85 to-background/30" />
+        <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
+          <p className="text-sm text-muted-foreground">
+            {isNew ? "Let's make your first post." : "Here's your creator overview."}
+          </p>
+          <h1 className="text-4xl md:text-5xl font-bold gradient-text mt-1 drop-shadow-[0_2px_20px_rgba(168,85,247,0.35)]">
+            {isNew ? "Welcome Aboard" : "Welcome Back"}
+          </h1>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
