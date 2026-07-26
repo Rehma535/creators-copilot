@@ -29,9 +29,6 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 // Hardcoded values directly to ensure zero runtime evaluation failures in Vercel
 const SUPABASE_URL = "https://mmhycplzjfhiyglttilt.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_cMzFwEY6kmiNZU4l-zjNbA_xwxIY_jJ";
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  "YOUR_ACTUAL_PUBLISHABLE_KEY_HERE";
 
 function createSupabaseClient() {
   console.log("[Supabase] Initializing client with URL:", SUPABASE_URL);
