@@ -96,17 +96,23 @@ This feature is explicitly framed as best-practice recommendations, not real aud
 
 ## f. Screenshots
 
-![Landing Page](landing-page.png)
+### 1. Landing Page
+![Landing Page](./Landing%20page.png)
 
-![Generate Page](Generate-page-1.png)
+### 2. Generate Page
+![Generate Page](./Generate%20page%201.png)
 
-![Generate Page with voice input](Generate-page-2.png)
+### 3. Generate Page with Voice Input
+![Generate Page Voice](./Generate%20page%202.png)
 
-![Calendar Page](Calendar-page.png)
+### 4. Calendar Page
+![Calendar Page](./Calendar%20page.png)
 
-![History Page](History-page.png)
+### 5. History Page
+![History Page](./History%20page.png)
 
-![Profile page](Profile-page.png)
+### 6. Profile Page
+![Profile Page](./Profile%20page.png)
 
 ## g. How to run this project locally
 
