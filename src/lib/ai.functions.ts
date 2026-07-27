@@ -24,25 +24,38 @@ function pickProvider(): { provider: Provider; key: string } {
   );
 }
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
 async function handleHttpError(res: Response): Promise<never> {
   const body = await res.text().catch(() => "");
   if (res.status === 401 || res.status === 403)
     throw new Error(`AI auth failed [${res.status}] — check your API key. ${body.slice(0, 200)}`);
-  if (res.status === 429) throw new Error("AI rate limit reached — try again in a moment.");
+  if (res.status === 429)
+    throw new Error("AI is busy right now — we hit a rate limit. Please wait a moment and try again.");
   if (res.status === 402) throw new Error("AI credits exhausted — please add credits to continue.");
   throw new Error(`AI request failed [${res.status}]: ${body.slice(0, 300)}`);
+}
+
+async function fetchWithRetry(url: string, init: RequestInit): Promise<Response> {
+  let res = await fetch(url, init);
+  if (res.status === 429) {
+    await sleep(1500);
+    res = await fetch(url, init);
+  }
+  return res;
 }
 
 async function callGemini(system: string, user: string): Promise<string> {
   const { provider, key } = pickProvider();
 
   if (provider === "gemini") {
-    const res = await fetch(GEMINI_ENDPOINT(GEMINI_MODEL, key), {
+    const res = await fetchWithRetry(GEMINI_ENDPOINT(GEMINI_MODEL, key), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: system }] },
         contents: [{ role: "user", parts: [{ text: user }] }],
+        generationConfig: { temperature: 0.9, maxOutputTokens: 4096 },
       }),
     });
     if (!res.ok) await handleHttpError(res);
@@ -54,7 +67,7 @@ async function callGemini(system: string, user: string): Promise<string> {
 
   const endpoint = provider === "lovable" ? LOVABLE_GATEWAY : OPENAI_ENDPOINT;
   const model = provider === "lovable" ? LOVABLE_MODEL : OPENAI_MODEL;
-  const res = await fetch(endpoint, {
+  const res = await fetchWithRetry(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
     body: JSON.stringify({
@@ -63,6 +76,8 @@ async function callGemini(system: string, user: string): Promise<string> {
         { role: "system", content: system },
         { role: "user", content: user },
       ],
+      temperature: 0.9,
+      max_tokens: 4096,
     }),
   });
   if (!res.ok) await handleHttpError(res);
