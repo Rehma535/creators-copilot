@@ -8,7 +8,7 @@ const GEMINI_ENDPOINT = (model: string, key: string) =>
 
 const LOVABLE_MODEL = "google/gemini-3.6-flash";
 const OPENAI_MODEL = "gpt-4o-mini";
-const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_MODEL = "gemini-3.6-flash";
 
 type Provider = "lovable" | "gemini" | "openai";
 
