@@ -49,7 +49,7 @@ function Dashboard() {
           alt="Content creator studio setup with ring light, monitors, and camera gear"
           className="h-64 md:h-80 w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-tr from-background via-background/85 to-background/30" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-background via-background/70 to-background/20" />
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10">
           <p className="text-sm text-muted-foreground">
             {isNew ? "Let's make your first post." : "Here's your creator overview."}
