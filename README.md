@@ -96,23 +96,17 @@ This feature is explicitly framed as best-practice recommendations, not real aud
 
 ## f. Screenshots
 
-Sign in / Landing Show Image
+![Landing Page](landing-page.png)
 
-Dashboard Show Image
+![Generate Page](Generate-page-1.png)
 
-Creator Profile — personalization Show Image
+![Generate Page with voice input](Generate-page-2.png)
 
-Generate — topic input Show Image
+![Calendar Page](Calendar-page.png)
 
-History — a real generated result Show Image
+![History Page](History-page.png)
 
-Content Calendar Show Image
-
-```markdown
-![Dashboard](./screenshots/dashboard.png)
-![Generate — YouTube output](./screenshots/generate.png)
-![Content Calendar](./screenshots/calendar.png)
-```
+![Profile page](Profile-page.png)
 
 ## g. How to run this project locally
 
