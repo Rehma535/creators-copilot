@@ -90,9 +90,8 @@ This feature is explicitly framed as best-practice recommendations, not real aud
 | App builder | [Lovable](https://lovable.dev) |
 | UI design | [Google Stitch](https://stitch.withgoogle.com) |
 | Backend / Auth / Database / Storage | [Supabase](https://supabase.com) |
-| AI model | Google Gemini API |
+| AI model | Google Gemini API, Lovable Gateway |
 | Deployment | [Vercel](https://vercel.com) |
-| AI pair-programming / planning | Claude (Anthropic) |
 
 ## f. Screenshots
 
@@ -133,9 +132,8 @@ This feature is explicitly framed as best-practice recommendations, not real aud
    ```
    VITE_SUPABASE_URL=your_supabase_project_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   GEMINI_API_KEY=your_google_ai_studio_key
    ```
-
-   > The Gemini API key is **not** stored in this file — it's configured as a server-side secret (`GEMINI_API_KEY`) inside the Supabase Edge Function that handles content generation, so it's never exposed to the browser. If you're running your own instance, add it under your Supabase project's Edge Function secrets.
 
 4. **Run the development server**
    ```bash
@@ -148,5 +146,3 @@ This feature is explicitly framed as best-practice recommendations, not real aud
    This project uses Supabase for authentication and data storage, with tables for `profiles` and `content_items`, both protected by Row Level Security so users can only access their own data. If setting up a fresh Supabase project, run the schema migrations found in the `/supabase` folder (or recreate the tables as described above) before first use.
 
 ---
-
-Built as a final project — an end-to-end AI-powered app designed, built, and shipped independently.
