@@ -1,29 +1,71 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
-const MODEL = "google/gemini-3.6-flash";
+const LOVABLE_GATEWAY = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const OPENAI_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+const GEMINI_ENDPOINT = (model: string, key: string) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+
+const LOVABLE_MODEL = "google/gemini-3.6-flash";
+const OPENAI_MODEL = "gpt-4o-mini";
+const GEMINI_MODEL = "gemini-2.0-flash";
+
+type Provider = "lovable" | "gemini" | "openai";
+
+function pickProvider(): { provider: Provider; key: string } {
+  const lovable = process.env.LOVABLE_API_KEY?.trim();
+  if (lovable) return { provider: "lovable", key: lovable };
+  const gemini = (process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY)?.trim();
+  if (gemini) return { provider: "gemini", key: gemini };
+  const openai = process.env.OPENAI_API_KEY?.trim();
+  if (openai) return { provider: "openai", key: openai };
+  throw new Error(
+    "No AI provider configured. Set LOVABLE_API_KEY, GEMINI_API_KEY, or OPENAI_API_KEY in your deployment environment.",
+  );
+}
+
+async function handleHttpError(res: Response): Promise<never> {
+  const body = await res.text().catch(() => "");
+  if (res.status === 401 || res.status === 403)
+    throw new Error(`AI auth failed [${res.status}] — check your API key. ${body.slice(0, 200)}`);
+  if (res.status === 429) throw new Error("AI rate limit reached — try again in a moment.");
+  if (res.status === 402) throw new Error("AI credits exhausted — please add credits to continue.");
+  throw new Error(`AI request failed [${res.status}]: ${body.slice(0, 300)}`);
+}
 
 async function callGemini(system: string, user: string): Promise<string> {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) throw new Error("LOVABLE_API_KEY not configured");
-  const res = await fetch(GATEWAY, {
+  const { provider, key } = pickProvider();
+
+  if (provider === "gemini") {
+    const res = await fetch(GEMINI_ENDPOINT(GEMINI_MODEL, key), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: system }] },
+        contents: [{ role: "user", parts: [{ text: user }] }],
+      }),
+    });
+    if (!res.ok) await handleHttpError(res);
+    const data = (await res.json()) as {
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+    };
+    return data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+  }
+
+  const endpoint = provider === "lovable" ? LOVABLE_GATEWAY : OPENAI_ENDPOINT;
+  const model = provider === "lovable" ? LOVABLE_MODEL : OPENAI_MODEL;
+  const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
     body: JSON.stringify({
-      model: MODEL,
+      model,
       messages: [
         { role: "system", content: system },
         { role: "user", content: user },
       ],
     }),
   });
-  if (!res.ok) {
-    const body = await res.text().catch(() => "");
-    if (res.status === 429) throw new Error("AI rate limit reached — try again in a moment.");
-    if (res.status === 402) throw new Error("AI credits exhausted — please add credits to continue.");
-    throw new Error(`AI request failed [${res.status}]: ${body.slice(0, 300)}`);
-  }
+  if (!res.ok) await handleHttpError(res);
   const data = (await res.json()) as { choices?: Array<{ message?: { content?: string } }> };
   return data.choices?.[0]?.message?.content ?? "";
 }
