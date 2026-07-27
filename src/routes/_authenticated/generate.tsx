@@ -65,12 +65,18 @@ function GeneratePage() {
     }
     const rec = new SR();
     rec.lang = "en-US";
-    rec.interimResults = true;
+    rec.interimResults = false;
     rec.continuous = false;
     rec.onresult = (e: any) => {
-      let out = "";
-      for (let i = e.resultIndex; i < e.results.length; i++) out += e.results[i][0].transcript;
-      setTopic((prev) => (prev ? prev + " " : "") + out);
+      let finalTranscript = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          finalTranscript += e.results[i][0].transcript;
+        }
+      }
+      if (finalTranscript) {
+        setTopic((prev) => (prev ? `${prev.trim()} ${finalTranscript.trim()}` : finalTranscript.trim()));
+      }
     };
     rec.onerror = () => setListening(false);
     rec.onend = () => setListening(false);
